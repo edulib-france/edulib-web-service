@@ -1,0 +1,17 @@
+{
+  "hostname": {
+    "production": "https://www.edulib.fr",
+    "staging": "https://staging-edulib.xair.cloud"
+  },
+  "basePath": "/api",
+  "versions": {
+    "v3": {
+      "webServices": {
+        "getUserBySsoId": { "path": "/users/identify-by-sso" },
+        "getUserByCredential": { "path": "/users/identify-by-credentials" },
+        "setUserSsoId": { "method": "PATCH", "path": "/users/set-sso-id" },
+        "getEtablishmentCatalog": { "path": "/establishment_accounts/catalog" }
+      }
+    }
+  }
+}
