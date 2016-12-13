@@ -14,7 +14,8 @@ class Edulib {
   }
 
   getUrl(ws) {
-    return this.hostname + this.basePath + `/${this.version}` + this.webServices[ws].path;
+    return this.hostname + this.basePath +
+      `/${this.version}` + this.webServices[ws].path;
   }
 
   getMethod(ws) {
