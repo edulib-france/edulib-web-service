@@ -2,19 +2,30 @@
 
 /* globals describe, it */
 
-var chai = require('chai');
-var expect = chai.expect;
-var chaiAsPromised = require('chai-as-promised');
+const chai = require('chai');
+const expect = chai.expect;
+const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
-var EdulibV3 = require('..').EdulibV3;
+const EdulibV3 = require('..').EdulibV3;
 
-var test = new EdulibV3('edulib-internal-api', 'staging');
-var username = '1000001h-p9519';
-var password = '4sS_xsjR';
-var ssoId = '42';
-var userId = '5773d27cccacda17dac68cb1';
+const test = new EdulibV3('edulib-internal-api', 'staging');
+const oAuthApp = {
+  clientId: 'bb7f6cdd71e8414110b813b9f691306ae90e0b874a3d9acde87361b35742181d', // jshint ignore:line
+  clientSecret: 'f35397ebf554be353a14940a219a88e6adf264fc0d988bc7d28d46220e22cb5d' // jshint ignore:line
+};
+const username = '1000001h-p9519';
+const password = '4sS_xsjR';
+const ssoId = '42';
+const userId = '5773d27cccacda17dac68cb1';
 
 describe('EdulibV3', () => {
+
+  describe('Auth', () => {
+    it('authenticate() should authenticate the user', () => {
+      return expect(test.authenticate(username, password, oAuthApp))
+        .to.eventually.have.property('access_token').not.empty;
+    });
+  });
 
   describe('User', () => {
     it('setUserSsoId() should reset the user ssoId',

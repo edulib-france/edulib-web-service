@@ -4,6 +4,10 @@
     "staging": "https://staging-edulib.xair.cloud"
   },
   "basePath": "/api",
+  "authenticate": {
+    "method": "POST",
+    "path": "/oauth/token"
+  },
   "versions": {
     "v3": {
       "webServices": {

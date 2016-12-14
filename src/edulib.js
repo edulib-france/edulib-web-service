@@ -28,7 +28,7 @@ class Edulib {
    * 
    * @memberOf Edulib
    */
-  addAuth() { throw new Error('missing addAuth implementation !'); }
+  addAuth() {}
 
   /**
    * web-service data
@@ -44,9 +44,17 @@ class Edulib {
    */
   runRequest(ws, data) {
     var deferred = Promise.defer();
+    var uri, method;
+    if (typeof ws === 'string') {
+      uri = this.getUrl(ws);
+      method = this.getMethod(ws);
+    } else {
+      uri = ws.uri;
+      method = ws.method;
+    }
     var options = {
-      uri: this.getUrl(ws),
-      method: this.getMethod(ws),
+      uri,
+      method,
       qs: data.query,
       form: data.form
     };
@@ -59,6 +67,34 @@ class Edulib {
       deferred.reject(res.statusCode);
     });
     return deferred.promise;
+  }
+
+  /**
+   * OAuth application
+   * @typedef {Object} OAuthApp
+   * @property {Object} clientId - OAuth application client id
+   * @property {Object} clientSecret - OAuth application client secret
+   * 
+   * 
+   * @param {any} username
+   * @param {any} password
+   * @param {any} app
+   * @returns
+   * 
+   * @memberOf Edulib
+   */
+  authenticate(username, password, app) {
+    var form = {
+      username,
+      password,
+      grant_type: 'password', // jshint ignore:line
+      client_id: app.clientId, // jshint ignore:line
+      client_secret: app.clientSecret // jshint ignore:line
+    };
+    return this.runRequest({
+      uri: this.hostname + config.authenticate.path,
+      method: config.authenticate.method
+    }, { form });
   }
 
 }
