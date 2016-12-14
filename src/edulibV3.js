@@ -5,8 +5,8 @@ const version = 'v3';
 
 class EdulibV3 extends Edulib {
 
-  constructor(authToken, env) {
-    super(version, env);
+  constructor(authToken, env, oAuthApp) {
+    super(version, env, oAuthApp);
     this.authToken = authToken;
   }
 

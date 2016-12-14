@@ -5,12 +5,27 @@ const config = require('../config/config.json');
 
 class Edulib {
 
-  constructor(version, env) {
+  /**
+   * OAuth application
+   * @typedef {Object} OAuthApp
+   * @property {Object} clientId - OAuth application client id
+   * @property {Object} clientSecret - OAuth application client secret
+   * 
+   * Creates an instance of Edulib.
+   * 
+   * @param {string} version
+   * @param {string} env
+   * @param {OAuthApp} oAuthApp
+   * 
+   * @memberOf Edulib
+   */
+  constructor(version, env, oAuthApp) {
     this.env = env || 'staging';
     this.version = version;
     this.hostname = config.hostname[env];
     this.basePath = config.basePath;
     this.webServices = config.versions[version].webServices;
+    this.oAuthApp = oAuthApp;
   }
 
   getUrl(ws) {
@@ -70,11 +85,6 @@ class Edulib {
   }
 
   /**
-   * OAuth application
-   * @typedef {Object} OAuthApp
-   * @property {Object} clientId - OAuth application client id
-   * @property {Object} clientSecret - OAuth application client secret
-   * 
    * 
    * @param {any} username
    * @param {any} password
@@ -83,13 +93,13 @@ class Edulib {
    * 
    * @memberOf Edulib
    */
-  authenticate(username, password, app) {
+  authenticate(username, password) {
     var form = {
       username,
       password,
       grant_type: 'password', // jshint ignore:line
-      client_id: app.clientId, // jshint ignore:line
-      client_secret: app.clientSecret // jshint ignore:line
+      client_id: this.oAuthApp.clientId, // jshint ignore:line
+      client_secret: this.oAuthApp.clientSecret // jshint ignore:line
     };
     return this.runRequest({
       uri: this.hostname + config.authenticate.path,
