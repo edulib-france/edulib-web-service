@@ -9,6 +9,13 @@
     "path": "/oauth/token"
   },
   "versions": {
+    "v2": {
+      "webServices": {
+        "getUser": { "path": "/users/me" },
+        "getUserLicenses": { "path": "/users/licenses" },
+        "getUserClassrooms": { "path": "/users/classrooms" }
+      }
+    },
     "v3": {
       "webServices": {
         "getUserBySsoId": { "path": "/users/identify-by-sso" },

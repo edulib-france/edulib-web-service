@@ -12,7 +12,9 @@ const oAuthApp = {
   clientId: 'bb7f6cdd71e8414110b813b9f691306ae90e0b874a3d9acde87361b35742181d', // jshint ignore:line
   clientSecret: 'f35397ebf554be353a14940a219a88e6adf264fc0d988bc7d28d46220e22cb5d' // jshint ignore:line
 };
-const test = new EdulibV3('edulib-internal-api', 'staging', oAuthApp);
+const authToken = 'edulib-internal-api';
+const env = 'staging';
+const test = new EdulibV3({ authToken, env, oAuthApp });
 const username = '1000001h-p9519';
 const password = '4sS_xsjR';
 const ssoId = '42';

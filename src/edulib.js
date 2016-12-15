@@ -3,47 +3,44 @@
 const request = require('request');
 const config = require('../config/config.json');
 
-class Edulib {
+/**
+ * 
+ * 
+ * @export
+ * @class Edulib
+ */
+module.exports = class Edulib {
 
   /**
-   * OAuth application
-   * @typedef {Object} OAuthApp
-   * @property {Object} clientId - OAuth application client id
-   * @property {Object} clientSecret - OAuth application client secret
-   * 
    * Creates an instance of Edulib.
-   * 
-   * @param {string} version
-   * @param {string} env
-   * @param {OAuthApp} oAuthApp
-   * 
+   * @param {object} options - options
+   * @param {string} options.authToken
+   * @param {string} [options.env=staging]
+   * @param {object} options.oAuthApp
+   * @param {string} options.oAuthApp.clientId - OAuth application client id
+   * @param {string} options.oAuthApp.clientSecret - OAuth application client secret
    * @memberOf Edulib
    */
-  constructor(version, env, oAuthApp) {
-    this.env = env || 'staging';
-    this.version = version;
-    this.hostname = config.hostname[env];
+  constructor(options) {
+    this.env = options.env || 'staging';
+    this.hostname = config.hostname[options.env];
     this.basePath = config.basePath;
-    this.webServices = config.versions[version].webServices;
-    this.oAuthApp = oAuthApp;
+    this.authToken = options.authToken;
+    this.oAuthApp = options.oAuthApp || {};
   }
 
-  getUrl(ws) {
-    return this.hostname + this.basePath +
-      `/${this.version}` + this.webServices[ws].path;
+  _getUrl(ws) {
+    if (!this.version) { return ''; }
+    return this.hostname +
+      this.basePath +
+      `/${this.version}` +
+      config.versions[this.version].webServices[ws].path;
   }
 
-  getMethod(ws) {
-    return this.webServices[ws].method || 'GET';
+  _getMethod(ws) {
+    if (!this.version) { return ''; }
+    return config.versions[this.version].webServices[ws].method || 'GET';
   }
-
-  /**
-   * 
-   * @param {Object} options request options 
-   * 
-   * @memberOf Edulib
-   */
-  addAuth() {}
 
   /**
    * web-service data
@@ -57,27 +54,20 @@ class Edulib {
    * 
    * @memberOf Edulib
    */
-  runRequest(ws, data) {
+  _runRequest(options) {
     var deferred = Promise.defer();
-    var uri, method;
-    if (typeof ws === 'string') {
-      uri = this.getUrl(ws);
-      method = this.getMethod(ws);
-    } else {
-      uri = ws.uri;
-      method = ws.method;
+    options = options || {};
+    if (typeof options.ws === 'string') {
+      options.uri = this._getUrl(options.ws);
+      options.method = this._getMethod(options.ws);
     }
-    var options = {
-      uri,
-      method,
-      qs: data.query,
-      form: data.form
-    };
-    this.addAuth(options);
+    if (this._addAuth) { this._addAuth(options); }
     request(options, (err, res, body) => {
       if (err) { return deferred.reject(err); }
       if (res.statusCode === 200) {
-        return deferred.resolve(JSON.parse(body));
+        try {
+          return deferred.resolve(JSON.parse(body));
+        } catch (err) { deferred.reject(err); }
       }
       deferred.reject(res.statusCode);
     });
@@ -94,19 +84,17 @@ class Edulib {
    * @memberOf Edulib
    */
   authenticate(username, password) {
-    var form = {
-      username,
-      password,
-      grant_type: 'password', // jshint ignore:line
-      client_id: this.oAuthApp.clientId, // jshint ignore:line
-      client_secret: this.oAuthApp.clientSecret // jshint ignore:line
-    };
-    return this.runRequest({
+    return this._runRequest({
       uri: this.hostname + config.authenticate.path,
-      method: config.authenticate.method
-    }, { form });
+      method: config.authenticate.method,
+      form: {
+        username,
+        password,
+        grant_type: 'password', // jshint ignore:line
+        client_id: this.oAuthApp.clientId, // jshint ignore:line
+        client_secret: this.oAuthApp.clientSecret // jshint ignore:line
+      }
+    });
   }
 
-}
-
-module.exports = Edulib;
+};
