@@ -28,7 +28,10 @@ module.exports = class EdulibV2 extends Edulib {
   }
 
   _getAuthHeader(authToken) {
-    return authToken ? { 'Authorization': `Bearer ${authToken}` } : undefined;
+    return authToken ? {
+      'Auth-Token': this.authToken,
+      Authorization: `Bearer ${this.authToken}`
+    } : undefined;
   }
 
   /**
