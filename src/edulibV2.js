@@ -28,10 +28,14 @@ module.exports = class EdulibV2 extends Edulib {
   }
 
   _getAuthHeader(authToken) {
-    return authToken ? {
-      'Auth-Token': this.authToken,
-      Authorization: `Bearer ${this.authToken}`
-    } : undefined;
+    var headers;
+    if (authToken) {
+      headers = { Authorization: `Bearer ${authToken}` };
+      if (this.env === 'staging') {
+        headers['Auth-Token'] = authToken;
+      }
+    }
+    return headers;
   }
 
   /**
