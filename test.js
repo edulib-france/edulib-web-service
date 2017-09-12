@@ -28,7 +28,7 @@ const classroom = 'test-ws';
 // v3.getUserByCredential('one', 'password').then(user => console.log(user));
 // v3.getEtablishmentCatalog('1000001H').then(catalog => console.log(catalog));
 
-const V4 = require('./dist/edulib.ws.v4');
+const V4 = require('./dist/').EdulibV4;
 const v4 = new V4({
   env: 'staging',
   oAuthApp: oauth
