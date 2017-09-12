@@ -2,9 +2,12 @@
   "name": "edulib-web-service",
   "version": "1.0.0",
   "description": "web services for edulib platform",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "mocha test/*.js"
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -14,12 +17,18 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/edulib/edulib-web-service#readme",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "merge": "^1.2.0",
-    "request": "^2.79.0"
+    "request": "^2.79.0",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.10",
+    "@types/node": "^8.0.28",
+    "@types/request": "^2.0.3",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "typescript": "^2.5.2"
   }
 }
