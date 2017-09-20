@@ -1,7 +1,7 @@
 import Promise = require('bluebird');
 import { AbstractEdulibWSToken, IOptions } from './abstract.edulib.ws.token';
 
-class EdulibWSV3 extends AbstractEdulibWSToken {
+export class EdulibWSV3 extends AbstractEdulibWSToken {
 
   constructor(protected options: IOptions, protected authToken: string) {
     super('v3', options);
@@ -28,5 +28,3 @@ class EdulibWSV3 extends AbstractEdulibWSToken {
   }
 
 };
-
-export = EdulibWSV3;

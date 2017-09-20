@@ -9,6 +9,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require('underscore');
 var abstract_edulib_ws_oauth_1 = require("./abstract.edulib.ws.oauth");
 var EdulibWSV4 = (function (_super) {
@@ -44,6 +45,19 @@ var EdulibWSV4 = (function (_super) {
     };
     EdulibWSV4.prototype.getEstablishmentAccounts = function () {
         return this.request({ uri: this.buildUrl('/establishment_accounts'), method: 'GET', });
+    };
+    EdulibWSV4.prototype.getEstablishmentByUAI = function (uai) {
+        return this.request({ uri: this.buildUrl("/establishment_accounts/by-uai/" + uai), method: 'GET', });
+    };
+    EdulibWSV4.prototype.getEstablishmentLicenses = function (id, articleId) {
+        var qs = {};
+        if (articleId) {
+            qs.article_id = articleId;
+        }
+        return this.request({ uri: this.buildUrl("/establishment_accounts/" + id + "/licenses"), method: 'GET', qs: qs });
+    };
+    EdulibWSV4.prototype.getEstablishmentCatalog = function (id) {
+        return this.request({ uri: this.buildUrl("/establishment_accounts/" + id + "/catalog"), method: 'GET' });
     };
     EdulibWSV4.prototype.getEstablishmentClassrooms = function (uai) {
         return this.request({ uri: this.buildUrl("/classrooms/establishment/" + uai), method: 'GET', });
@@ -135,6 +149,6 @@ var EdulibWSV4 = (function (_super) {
     };
     return EdulibWSV4;
 }(abstract_edulib_ws_oauth_1.AbstractEdulibWSOAuth));
+exports.EdulibWSV4 = EdulibWSV4;
 ;
-module.exports = EdulibWSV4;
 //# sourceMappingURL=edulib.ws.v4.js.map

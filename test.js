@@ -19,23 +19,33 @@ const classroom = 'test-ws';
 //   v2.getUser().then(user => console.log(user));
 // });
 
-// const V3 = require('./dist/edulib.ws.v3');
+// const V3 = require('./dist').EdulibV3;
 // const v3 = new V3({
-//   env: 'staging',
+//   env: 'production',
 //   authToken: 'edulib-internal-api'
 // });
 
 // v3.getUserByCredential('one', 'password').then(user => console.log(user));
+// v3.setUserSsoId('58807a36ccacda73bfcaa63e', null).then(user => console.log(user));
+// v3.getUserBySsoId('0932638M','53ffd3cb-e0e9-4703-8cf3-b886fcc14f67', null).then(user => console.log(user));
 // v3.getEtablishmentCatalog('1000001H').then(catalog => console.log(catalog));
+// v3.getUserBySsoId('1000051M', '16F81CC6015F239FFA23D166DBB689A5').then(
+// v3.getUserBySsoId('1000001H', 'test').then(
+//   user => console.log(user),
+//   err => console.error(err));
 
-const V4 = require('./dist/').EdulibV4;
+const V4 = require('./dist').EdulibV4;
 const v4 = new V4({
   env: 'staging',
   oAuthApp: oauth
 });
-v4.authenticate('one', 'password').then(() => {
+v4.authenticate('one', 'password').then((auth) => {
+    //   console.log(auth);
+    // return v4.getGrades().then(data => console.log(data));
+    // return v4.getSchoolLevels().then(data => console.log(data));
+    // return v4.getSubjects().then(data => console.log(data));
     // v4.getEstablishmentClassrooms('1000001H').then(data => console.log(data));
-    // v4.getEstablishmentClassroom('1000001H', classroom).then(data => console.log(data));
+    v4.getEstablishmentClassroom('1000001H', classroom).then(data => console.log(data));
     // v4.getEstablishmentAccounts().then(data => console.log(data));
     // return v4.createClassroom({
     //   establishment_account_id: etablishmentId,
@@ -53,14 +63,14 @@ v4.authenticate('one', 'password').then(() => {
     //   password: 'password',
     //   classroom_id: classroom
     // }).then(data => console.log(data));
-    return v4.createTeacher({
-      establishment_account_id: etablishmentId,
-      last_name: 'test',
-      first_name: 'test',
-      email: 'test-ws-student@student.edulib.fr',
-      password: 'password',
-      classroom_ids: [classroom],
-      subject_ids: [subject]
-    }).then(data => console.log(data));
+    //   return v4.createTeacher({
+    //     establishment_account_id: etablishmentId,
+    //     last_name: 'test',
+    //     first_name: 'test',
+    //     email: 'test-ws-student@student.edulib.fr',
+    //     password: 'password',
+    //     classroom_ids: [classroom],
+    //     subject_ids: [subject]
+    //   }).then(data => console.log(data));
   }, err => console.error('error:', err))
   .catch(err => console.error('catched error:', err));

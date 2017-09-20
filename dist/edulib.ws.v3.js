@@ -9,6 +9,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+Object.defineProperty(exports, "__esModule", { value: true });
 var abstract_edulib_ws_token_1 = require("./abstract.edulib.ws.token");
 var EdulibWSV3 = (function (_super) {
     __extends(EdulibWSV3, _super);
@@ -36,6 +37,6 @@ var EdulibWSV3 = (function (_super) {
     };
     return EdulibWSV3;
 }(abstract_edulib_ws_token_1.AbstractEdulibWSToken));
+exports.EdulibWSV3 = EdulibWSV3;
 ;
-module.exports = EdulibWSV3;
 //# sourceMappingURL=edulib.ws.v3.js.map

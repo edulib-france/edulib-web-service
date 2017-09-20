@@ -41,7 +41,10 @@ export abstract class AbstractEdulibWS {
     const deferred = Promise.defer();
     const authToken = this.getAuthToken();
     if (authToken) {
-      options.headers = merge({ Authorization: `Bearer ${authToken}` }, options.headers || {});
+      options.headers = merge({
+        Authorization: `Bearer ${authToken}`
+      },
+        options.headers || {});
     }
     this.logger.debug('EdulibWS::request', 'options:', options);
     request(options, (err, res, body) => {

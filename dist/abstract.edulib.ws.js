@@ -20,7 +20,9 @@ var AbstractEdulibWS = (function () {
         var deferred = Promise.defer();
         var authToken = this.getAuthToken();
         if (authToken) {
-            options.headers = merge({ Authorization: "Bearer " + authToken }, options.headers || {});
+            options.headers = merge({
+                Authorization: "Bearer " + authToken
+            }, options.headers || {});
         }
         this.logger.debug('EdulibWS::request', 'options:', options);
         request(options, function (err, res, body) {

@@ -2,42 +2,76 @@ import Promise = require('bluebird');
 const _ = require('underscore');
 import { AbstractEdulibWSOAuth, IOptions } from './abstract.edulib.ws.oauth';
 
-declare namespace EdulibWSV4 {
-
-  export interface IClassroom {
-    establishment_account_id: string;
-    school_level_id: string;
-    grade_id: string;
-    degree_id: string;
-    name: string;
-    code: string;
-  }
-
-  export interface IStudent {
-    establishment_account_id: string;
-    last_name: string;
-    first_name: string;
-    email: string;
-    password: string;
-    classroom_id: string;
-    school_level_id?: string;
-    grade_id?: string;
-    degree_id?: string;
-  }
-
-  export interface ITeacher {
-    establishment_account_id: string;
-    last_name: string;
-    first_name: string;
-    email: string;
-    password: string;
-    classroom_ids: string[];
-    subject_ids: string[];
-  }
-
+export interface IClassroom {
+  establishment_account_id: string;
+  school_level_id: string;
+  grade_id: string;
+  degree_id: string;
+  name: string;
+  code: string;
 }
 
-class EdulibWSV4 extends AbstractEdulibWSOAuth {
+export interface IStudent {
+  establishment_account_id: string;
+  last_name: string;
+  first_name: string;
+  email: string;
+  password: string;
+  classroom_id: string;
+  school_level_id?: string;
+  grade_id?: string;
+  degree_id?: string;
+}
+
+export interface ITeacher {
+  establishment_account_id: string;
+  last_name: string;
+  first_name: string;
+  email: string;
+  password: string;
+  classroom_ids: string[];
+  subject_ids: string[];
+}
+
+export interface IEtablishmentLicense {
+  id: string;
+  key: string;
+  start_validity_date: number;
+  end_validity_date: number;
+  license_article: {
+    isbn: string;
+    title: string;
+    availability_date_theoretical: string;
+    is_available_via_ent: boolean;
+  },
+  license_product: {
+    isbn: string;
+    title: string;
+    editor: string;
+    resource_type: string;
+    levels: string;
+    degrees: string;
+    subjects: string;
+    images: {
+      thumb: string;
+      small: string;
+      medium: string;
+      large: string;
+    }
+  },
+  license_offer: {
+    reference: string;
+    license_length: number;
+    unit_price: number;
+  },
+  created_at: string;
+  student_id: string;
+  teacher_id: string;
+  is_affected: true;
+}
+
+
+export class EdulibWSV4 extends AbstractEdulibWSOAuth {
 
   constructor(protected options: IOptions) {
     super('v4', options);
@@ -79,6 +113,20 @@ class EdulibWSV4 extends AbstractEdulibWSOAuth {
     return this.request({ uri: this.buildUrl('/establishment_accounts'), method: 'GET', });
   }
 
+  public getEstablishmentByUAI(uai: string): Promise<any> {
+    return this.request({ uri: this.buildUrl(`/establishment_accounts/by-uai/${uai}`), method: 'GET', })
+  }
+
+  public getEstablishmentLicenses(id: string, articleId?: string): Promise<IEtablishmentLicense[]> {
+    const qs: any = {};
+    if (articleId) { qs.article_id = articleId; }
+    return this.request({ uri: this.buildUrl(`/establishment_accounts/${id}/licenses`), method: 'GET', qs })
+  }
+
+  public getEstablishmentCatalog(id: string): Promise<IEtablishmentLicense[]> {
+    return this.request({ uri: this.buildUrl(`/establishment_accounts/${id}/catalog`), method: 'GET' })
+  }
+
   public getEstablishmentClassrooms(uai: string): Promise<any> {
     return this.request({ uri: this.buildUrl(`/classrooms/establishment/${uai}`), method: 'GET', });
   }
@@ -87,7 +135,7 @@ class EdulibWSV4 extends AbstractEdulibWSOAuth {
     return this.request({ uri: this.buildUrl(`/classrooms/establishment/${uai}/classroom/${code}`), method: 'GET', });
   }
 
-  public createClassroom(data: EdulibWSV4.IClassroom): Promise<any> {
+  public createClassroom(data: IClassroom): Promise<any> {
     const form = { classroom: data };
     return this.request({ uri: this.buildUrl('/classrooms'), method: 'POST', form });
   }
@@ -97,7 +145,7 @@ class EdulibWSV4 extends AbstractEdulibWSOAuth {
     return this.request({ uri: this.buildUrl(`/classrooms/${id}`), method: 'POST', form });
   }
 
-  public createStudent(data: EdulibWSV4.IStudent): Promise<any> {
+  public createStudent(data: IStudent): Promise<any> {
     const form = { student: data };
     return this.request({ uri: this.buildUrl('/students'), method: 'POST', form });
   }
@@ -117,7 +165,7 @@ class EdulibWSV4 extends AbstractEdulibWSOAuth {
     return this.request({ uri: this.buildUrl(`/students/${id}/unassign`), method: 'POST', form });
   }
 
-  public createTeacher(data: EdulibWSV4.ITeacher): Promise<any> {
+  public createTeacher(data: ITeacher): Promise<any> {
     const formData = this.flattenJSON({ teacher: data });
     const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
     return this.request({ uri: this.buildUrl('/teachers'), method: 'POST', headers, formData });
@@ -173,5 +221,3 @@ class EdulibWSV4 extends AbstractEdulibWSOAuth {
   }
 
 };
-
-export = EdulibWSV4;

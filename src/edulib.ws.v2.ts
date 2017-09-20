@@ -1,7 +1,7 @@
 import Promise = require('bluebird');
 import { AbstractEdulibWSOAuth, IOptions } from './abstract.edulib.ws.oauth';
 
-class EdulibWSV2 extends AbstractEdulibWSOAuth {
+export class EdulibWSV2 extends AbstractEdulibWSOAuth {
 
   constructor(protected options: IOptions) {
     super('v2', options);
@@ -20,5 +20,3 @@ class EdulibWSV2 extends AbstractEdulibWSOAuth {
   }
 
 };
-
-export = EdulibWSV2;
