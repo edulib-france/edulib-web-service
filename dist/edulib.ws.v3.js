@@ -13,10 +13,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var abstract_edulib_ws_token_1 = require("./abstract.edulib.ws.token");
 var EdulibWSV3 = (function (_super) {
     __extends(EdulibWSV3, _super);
-    function EdulibWSV3(options, authToken) {
+    function EdulibWSV3(options) {
         var _this = _super.call(this, 'v3', options) || this;
         _this.options = options;
-        _this.authToken = authToken;
         return _this;
     }
     EdulibWSV3.prototype.getUserBySsoId = function (uai, ssoId) {
@@ -34,6 +33,14 @@ var EdulibWSV3 = (function (_super) {
     EdulibWSV3.prototype.getEtablishmentCatalog = function (uai) {
         var qs = { uai: uai };
         return this.request({ uri: this.buildUrl('/establishment_accounts/catalog'), method: 'GET', qs: qs });
+    };
+    EdulibWSV3.prototype.createLicense = function (uai, productEan, articleEan, offerRef, quantity) {
+        var form = {
+            offer_reference: offerRef,
+            article_isbn: articleEan, product_isbn: productEan,
+            establishment_account_uai: uai, license_count: quantity
+        };
+        return this.request({ uri: this.buildUrl('/licenses'), method: 'POST', form: form });
     };
     return EdulibWSV3;
 }(abstract_edulib_ws_token_1.AbstractEdulibWSToken));
