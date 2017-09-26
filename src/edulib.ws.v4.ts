@@ -9,35 +9,56 @@ export interface IClassroom {
   degree_id: string;
   name: string;
   code: string;
+  id?: string;
 }
 
-export interface IStudent {
+export interface IEtablishmentUser {
   establishment_account_id: string;
   last_name: string;
   first_name: string;
   email: string;
   password: string;
+}
+
+export interface IStudent extends IEtablishmentUser {
   classroom_id: string;
   school_level_id?: string;
   grade_id?: string;
   degree_id?: string;
 }
 
-export interface ITeacher {
-  establishment_account_id: string;
-  last_name: string;
-  first_name: string;
-  email: string;
-  password: string;
+export interface ITeacher extends IEtablishmentUser {
   classroom_ids: string[];
   subject_ids: string[];
+}
+
+export interface IGrade {
+  id: string;
+  name: string;
+  slug: string;
+  order: number;
+  school_level_id: string;
+}
+
+export interface ISchoolLevel {
+  id: string;
+  name: string;
+  slug: string;
+  order: number;
+}
+
+export interface ISubject {
+  id: string;
+  name: string;
+  slug: string;
+  school_level_ids: string[];
 }
 
 export interface IEtablishmentLicense {
   id: string;
   key: string;
-  start_validity_date: number;
-  end_validity_date: number;
+  start_validity_date: string;
+  end_validity_date: string;
   license_article: {
     isbn: string;
     title: string;
@@ -70,18 +91,17 @@ export interface IEtablishmentLicense {
   is_affected: true;
 }
 
-
 export class EdulibWSV4 extends AbstractEdulibWSOAuth {
 
   constructor(protected options: IOptions) {
     super('v4', options);
   }
 
-  public getGrades(): Promise<any> {
+  public getGrades(): Promise<IGrade[]> {
     return this.request({ uri: this.buildUrl('/grades'), method: 'GET', });
   }
 
-  public getGrade(id: string): Promise<any> {
+  public getGrade(id: string): Promise<IGrade> {
     return this.request({ uri: this.buildUrl(`/grades/${id}`), method: 'GET', });
   }
 
@@ -93,19 +113,19 @@ export class EdulibWSV4 extends AbstractEdulibWSOAuth {
     return this.request({ uri: this.buildUrl(`/degrees/${id}`), method: 'GET', });
   }
 
-  public getSchoolLevels(): Promise<any> {
+  public getSchoolLevels(): Promise<ISchoolLevel[]> {
     return this.request({ uri: this.buildUrl('/school_levels'), method: 'GET', });
   }
 
-  public getSchoolLevel(id: string): Promise<any> {
+  public getSchoolLevel(id: string): Promise<ISchoolLevel> {
     return this.request({ uri: this.buildUrl(`/school_levels/${id}`), method: 'GET', });
   }
 
-  public getSubjects(): Promise<any> {
+  public getSubjects(): Promise<ISubject[]> {
     return this.request({ uri: this.buildUrl('/subjects'), method: 'GET', });
   }
 
-  public getSubject(id: string): Promise<any> {
+  public getSubject(id: string): Promise<ISubject> {
     return this.request({ uri: this.buildUrl(`/subjects/${id}`), method: 'GET', });
   }
 
@@ -123,15 +143,11 @@ export class EdulibWSV4 extends AbstractEdulibWSOAuth {
     return this.request({ uri: this.buildUrl(`/establishment_accounts/${id}/licenses`), method: 'GET', qs })
   }
 
-  public getEstablishmentCatalog(id: string): Promise<IEtablishmentLicense[]> {
-    return this.request({ uri: this.buildUrl(`/establishment_accounts/${id}/catalog`), method: 'GET' })
-  }
-
-  public getEstablishmentClassrooms(uai: string): Promise<any> {
+  public getEstablishmentClassrooms(uai: string): Promise<IClassroom[]> {
     return this.request({ uri: this.buildUrl(`/classrooms/establishment/${uai}`), method: 'GET', });
   }
 
-  public getEstablishmentClassroom(uai: string, code: string): Promise<any> {
+  public getEstablishmentClassroom(uai: string, code: string): Promise<IClassroom> {
     return this.request({ uri: this.buildUrl(`/classrooms/establishment/${uai}/classroom/${code}`), method: 'GET', });
   }
 
@@ -187,7 +203,7 @@ export class EdulibWSV4 extends AbstractEdulibWSOAuth {
   }
 
   protected flattenJSON(obj: any, lvl = 0): any {
-    var nobj: { [key: string]: string } = {};
+    let nobj: { [key: string]: string } = {};
     _.each(obj, (val: any, key: string) => {
       if (_.isArray(val) && !_.isEmpty(val)) {
         _.each(val, (v: any) => {
@@ -201,7 +217,7 @@ export class EdulibWSV4 extends AbstractEdulibWSOAuth {
           };
         })
       } else if (_.isObject(val) && !_.isEmpty(val)) {
-        var strip = this.flattenJSON(val, lvl + 1)
+        const strip = this.flattenJSON(val, lvl + 1)
         _.each(strip, function (v: any, k: string) {
           if (lvl === 0) {
             nobj[`${key}${k}`] = v

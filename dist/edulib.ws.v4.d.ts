@@ -7,32 +7,49 @@ export interface IClassroom {
     degree_id: string;
     name: string;
     code: string;
+    id?: string;
 }
-export interface IStudent {
+export interface IEtablishmentUser {
     establishment_account_id: string;
     last_name: string;
     first_name: string;
     email: string;
     password: string;
+}
+export interface IStudent extends IEtablishmentUser {
     classroom_id: string;
     school_level_id?: string;
     grade_id?: string;
     degree_id?: string;
 }
-export interface ITeacher {
-    establishment_account_id: string;
-    last_name: string;
-    first_name: string;
-    email: string;
-    password: string;
+export interface ITeacher extends IEtablishmentUser {
     classroom_ids: string[];
     subject_ids: string[];
+}
+export interface IGrade {
+    id: string;
+    name: string;
+    slug: string;
+    order: number;
+    school_level_id: string;
+}
+export interface ISchoolLevel {
+    id: string;
+    name: string;
+    slug: string;
+    order: number;
+}
+export interface ISubject {
+    id: string;
+    name: string;
+    slug: string;
+    school_level_ids: string[];
 }
 export interface IEtablishmentLicense {
     id: string;
     key: string;
-    start_validity_date: number;
-    end_validity_date: number;
+    start_validity_date: string;
+    end_validity_date: string;
     license_article: {
         isbn: string;
         title: string;
@@ -67,20 +84,19 @@ export interface IEtablishmentLicense {
 export declare class EdulibWSV4 extends AbstractEdulibWSOAuth {
     protected options: IOptions;
     constructor(options: IOptions);
-    getGrades(): Promise<any>;
-    getGrade(id: string): Promise<any>;
+    getGrades(): Promise<IGrade[]>;
+    getGrade(id: string): Promise<IGrade>;
     getDegrees(): Promise<any>;
     getDegree(id: string): Promise<any>;
-    getSchoolLevels(): Promise<any>;
-    getSchoolLevel(id: string): Promise<any>;
-    getSubjects(): Promise<any>;
-    getSubject(id: string): Promise<any>;
+    getSchoolLevels(): Promise<ISchoolLevel[]>;
+    getSchoolLevel(id: string): Promise<ISchoolLevel>;
+    getSubjects(): Promise<ISubject[]>;
+    getSubject(id: string): Promise<ISubject>;
     getEstablishmentAccounts(): Promise<any>;
     getEstablishmentByUAI(uai: string): Promise<any>;
     getEstablishmentLicenses(id: string, articleId?: string): Promise<IEtablishmentLicense[]>;
-    getEstablishmentCatalog(id: string): Promise<IEtablishmentLicense[]>;
-    getEstablishmentClassrooms(uai: string): Promise<any>;
-    getEstablishmentClassroom(uai: string, code: string): Promise<any>;
+    getEstablishmentClassrooms(uai: string): Promise<IClassroom[]>;
+    getEstablishmentClassroom(uai: string, code: string): Promise<IClassroom>;
     createClassroom(data: IClassroom): Promise<any>;
     updateClassroom(id: string, data: any): Promise<any>;
     createStudent(data: IStudent): Promise<any>;
