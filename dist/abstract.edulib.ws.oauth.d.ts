@@ -21,5 +21,6 @@ export declare abstract class AbstractEdulibWSOAuth extends AbstractEdulibWS {
     auth: IAuth;
     constructor(version: string, options: IOptions);
     protected authenticate(username: string, password: string): Promise<IAuth>;
+    protected refresh(): Promise<IAuth>;
     protected getAuthToken(): string;
 }

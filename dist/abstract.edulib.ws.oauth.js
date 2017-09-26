@@ -33,6 +33,19 @@ var AbstractEdulibWSOAuth = (function (_super) {
             }
         }).then(function (auth) { return _this.auth = auth; });
     };
+    AbstractEdulibWSOAuth.prototype.refresh = function () {
+        var _this = this;
+        return this.request({
+            uri: this.host + "/oauth/token",
+            method: 'POST',
+            form: {
+                grant_type: 'refresh_token',
+                client_id: this.options.oAuthApp.clientId,
+                client_secret: this.options.oAuthApp.clientSecret,
+                refresh_token: this.getAuthToken()
+            }
+        }).then(function (auth) { return _this.auth = auth; });
+    };
     AbstractEdulibWSOAuth.prototype.getAuthToken = function () {
         return this.auth ? this.auth.access_token : '';
     };

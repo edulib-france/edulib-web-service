@@ -41,6 +41,19 @@ export abstract class AbstractEdulibWSOAuth extends AbstractEdulibWS {
     }).then(auth => this.auth = auth);
   }
 
+  protected refresh(): Promise<IAuth> {
+    return this.request({
+      uri: `${this.host}/oauth/token`,
+      method: 'POST',
+      form: {
+        grant_type: 'refresh_token',
+        client_id: this.options.oAuthApp.clientId,
+        client_secret: this.options.oAuthApp.clientSecret,
+        refresh_token: this.getAuthToken()
+      }
+    }).then(auth => this.auth = auth);
+  }
+
   protected getAuthToken(): string {
     return this.auth ? this.auth.access_token : '';
   }
