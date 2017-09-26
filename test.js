@@ -39,38 +39,52 @@ const v4 = new V4({
   env: 'staging',
   oAuthApp: oauth
 });
-v4.authenticate('one', 'password').then((auth) => {
-    //   console.log(auth);
-    // return v4.getGrades().then(data => console.log(data));
-    // return v4.getSchoolLevels().then(data => console.log(data));
-    // return v4.getSubjects().then(data => console.log(data));
-    // v4.getEstablishmentClassrooms('1000001H').then(data => console.log(data));
-    v4.getEstablishmentClassroom('1000001H', classroom).then(data => console.log(data));
-    // v4.getEstablishmentAccounts().then(data => console.log(data));
-    // return v4.createClassroom({
-    //   establishment_account_id: etablishmentId,
-    //   school_level_id: schoolLevel,
-    //   grade_id: grade,
-    //   degree_id: null,
-    //   name: 'test-ws',
-    //   code: classroom
-    // }).then(data => console.log(data));
-    // return v4.createStudent({
-    //   establishment_account_id: etablishmentId,
-    //   last_name: 'test',
-    //   first_name: 'test',
-    //   email: 'test-ws-student@student.edulib.fr',
-    //   password: 'password',
-    //   classroom_id: classroom
-    // }).then(data => console.log(data));
-    //   return v4.createTeacher({
-    //     establishment_account_id: etablishmentId,
-    //     last_name: 'test',
-    //     first_name: 'test',
-    //     email: 'test-ws-student@student.edulib.fr',
-    //     password: 'password',
-    //     classroom_ids: [classroom],
-    //     subject_ids: [subject]
-    //   }).then(data => console.log(data));
-  }, err => console.error('error:', err))
-  .catch(err => console.error('catched error:', err));
+// v4.authenticate('one', 'password').then((auth) => {
+//   console.log(auth);
+// return v4.getGrades().then(data => console.log(data));
+// return v4.getSchoolLevels().then(data => console.log(data));
+// return v4.getSubjects().then(data => console.log(data));
+// v4.getEstablishmentClassrooms('1000001H').then(data => console.log(data));
+// v4.getEstablishmentClassroom('1000001H', classroom).then(data => console.log(data));
+// v4.getEstablishmentAccounts().then(data => console.log(data));
+// return v4.createClassroom({
+//   establishment_account_id: etablishmentId,
+//   school_level_id: schoolLevel,
+//   grade_id: grade,
+//   degree_id: null,
+//   name: 'test-ws',
+//   code: classroom
+// }).then(data => console.log(data));
+// return v4.createStudent({
+//   establishment_account_id: etablishmentId,
+//   last_name: 'test',
+//   first_name: 'test',
+//   email: 'test-ws-student@student.edulib.fr',
+//   password: 'password',
+//   classroom_id: classroom
+// }).then(data => console.log(data));
+//   return v4.createTeacher({
+//     establishment_account_id: etablishmentId,
+//     last_name: 'test',
+//     first_name: 'test',
+//     email: 'test-ws-student@student.edulib.fr',
+//     password: 'password',
+//     classroom_ids: [classroom],
+//     subject_ids: [subject]
+//   }).then(data => console.log(data));
+// }, err => console.error('error:', err))
+// .catch(err => console.error('catched error:', err));
+
+console.log(
+  v4.flattenJSON({
+    teacher: {
+      establishment_account_id: etablishmentId,
+      last_name: 'test',
+      first_name: 'test',
+      email: 'test-ws-student@student.edulib.fr',
+      password: 'password',
+      classroom_ids: [classroom],
+      subject_ids: [subject]
+    }
+  })
+);

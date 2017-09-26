@@ -107,5 +107,5 @@ export declare class EdulibWSV4 extends AbstractEdulibWSOAuth {
     updateTeacher(id: string, data: any): Promise<any>;
     assignTeacherLicense(id: string, licenseId: string): Promise<any>;
     unassignTeacherLicense(id: string, licenseId: string): Promise<any>;
-    protected flattenJSON(obj: any, lvl?: number): any;
+    flattenJSON(obj: any, lvl?: number): any;
 }

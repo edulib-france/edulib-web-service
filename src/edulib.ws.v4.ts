@@ -202,7 +202,7 @@ export class EdulibWSV4 extends AbstractEdulibWSOAuth {
     return this.request({ uri: this.buildUrl(`/teachers/${id}/unassign`), method: 'POST', form });
   }
 
-  protected flattenJSON(obj: any, lvl = 0): any {
+  public flattenJSON(obj: any, lvl = 0): any {
     let nobj: { [key: string]: string } = {};
     _.each(obj, (val: any, key: string) => {
       if (_.isArray(val) && !_.isEmpty(val)) {
