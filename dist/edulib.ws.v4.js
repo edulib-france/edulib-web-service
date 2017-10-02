@@ -56,6 +56,9 @@ var EdulibWSV4 = (function (_super) {
         }
         return this.request({ uri: this.buildUrl("/establishment_accounts/" + id + "/licenses"), method: 'GET', qs: qs });
     };
+    EdulibWSV4.prototype.getEstablishmentCatalog = function (id) {
+        return this.request({ uri: this.buildUrl("/establishment_accounts/" + id + "/catalog"), method: 'GET' });
+    };
     EdulibWSV4.prototype.getEstablishmentClassrooms = function (uai) {
         return this.request({ uri: this.buildUrl("/classrooms/establishment/" + uai), method: 'GET', });
     };

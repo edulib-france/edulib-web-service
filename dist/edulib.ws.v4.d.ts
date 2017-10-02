@@ -95,6 +95,7 @@ export declare class EdulibWSV4 extends AbstractEdulibWSOAuth {
     getEstablishmentAccounts(): Promise<any>;
     getEstablishmentByUAI(uai: string): Promise<any>;
     getEstablishmentLicenses(id: string, articleId?: string): Promise<IEtablishmentLicense[]>;
+    getEstablishmentCatalog(id: string): Promise<IEtablishmentLicense[]>;
     getEstablishmentClassrooms(uai: string): Promise<IClassroom[]>;
     getEstablishmentClassroom(uai: string, code: string): Promise<IClassroom>;
     createClassroom(data: IClassroom): Promise<any>;

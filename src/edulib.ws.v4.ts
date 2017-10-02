@@ -143,6 +143,10 @@ export class EdulibWSV4 extends AbstractEdulibWSOAuth {
     return this.request({ uri: this.buildUrl(`/establishment_accounts/${id}/licenses`), method: 'GET', qs })
   }
 
+  public getEstablishmentCatalog(id: string): Promise<IEtablishmentLicense[]> {
+    return this.request({ uri: this.buildUrl(`/establishment_accounts/${id}/catalog`), method: 'GET' })
+  }
+
   public getEstablishmentClassrooms(uai: string): Promise<IClassroom[]> {
     return this.request({ uri: this.buildUrl(`/classrooms/establishment/${uai}`), method: 'GET', });
   }
