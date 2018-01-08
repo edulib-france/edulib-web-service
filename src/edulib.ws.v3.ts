@@ -12,6 +12,41 @@ export interface IUser {
   cas__sso_id: string;
 }
 
+export interface ILicense {
+  id: string;
+  key: string;
+  slug: string;
+  start_validity_date: string;
+  end_validity_date: string;
+  license_article: {
+    isbn: number;
+    title: string;
+    availability_date_theoretical: string;
+    is_available_via_ent: boolean;
+  },
+  license_product: {
+    isbn: string;
+    title: string;
+    editor: string;
+    resource_type: string;
+    levels: string;
+    degrees: string;
+    subjects: string;
+    images: {
+      thumb: string;
+      small: string;
+      medium: string;
+      large: string;
+    }
+  },
+  license_offer: {
+    reference: string;
+    license_length: number;
+    unit_price: number;
+  },
+  created_at: string;
+}
+
 export class EdulibWSV3 extends AbstractEdulibWSToken {
 
   constructor(protected options: IOptions) {

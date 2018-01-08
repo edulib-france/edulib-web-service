@@ -1,7 +1,7 @@
 const merge = require('merge');
 import Promise = require('bluebird');
 import request = require('request');
-import { Options } from 'request';
+import { Options, RequestResponse } from 'request';
 
 export interface IEnvironment {
   [key: string]: string;
@@ -39,6 +39,15 @@ export abstract class AbstractEdulibWS {
 
   protected request(options: Options): Promise<any> {
     const deferred = Promise.defer();
+    this.updateOptions(options);
+    this.logger.debug('EdulibWS::request', 'options:', options);
+    request(options, (err, res, body) => {
+      this.processResponse(err, res, body).then((data) => deferred.resolve(data), (err) => deferred.reject(err));
+    });
+    return deferred.promise;
+  }
+
+  protected updateOptions(options: Options) {
     const authToken = this.getAuthToken();
     if (authToken) {
       options.headers = merge({
@@ -46,19 +55,18 @@ export abstract class AbstractEdulibWS {
       },
         options.headers || {});
     }
-    this.logger.debug('EdulibWS::request', 'options:', options);
-    request(options, (err, res, body) => {
-      if (err) { return deferred.reject(err); }
-      if (res.statusCode === 200 || res.statusCode === 201) {
-        try {
-          return deferred.resolve(JSON.parse(body));
-        } catch (err) {
-          deferred.reject(err);
-        }
+  }
+
+  protected processResponse(err: any, res: RequestResponse, body: any): Promise<any> {
+    if (err) { return Promise.reject(err); }
+    if (res.statusCode === 200 || res.statusCode === 201) {
+      try {
+        return Promise.resolve(JSON.parse(body));
+      } catch (err) {
+        Promise.reject(err);
       }
-      deferred.reject({ statusCode: res.statusCode, message: body });
-    });
-    return deferred.promise;
+    }
+    return Promise.reject({ statusCode: res.statusCode, message: body });
   }
 
   protected buildUrl(path: string) {

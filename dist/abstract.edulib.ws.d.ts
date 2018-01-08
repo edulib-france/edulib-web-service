@@ -1,5 +1,5 @@
 import Promise = require('bluebird');
-import { Options } from 'request';
+import { Options, RequestResponse } from 'request';
 export interface IEnvironment {
     [key: string]: string;
 }
@@ -20,5 +20,7 @@ export declare abstract class AbstractEdulibWS {
     constructor(version: string, options: IOptions);
     protected abstract getAuthToken(): string;
     protected request(options: Options): Promise<any>;
+    protected updateOptions(options: Options): void;
+    protected processResponse(err: any, res: RequestResponse, body: any): Promise<any>;
     protected buildUrl(path: string): string;
 }

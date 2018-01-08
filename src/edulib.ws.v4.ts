@@ -1,6 +1,6 @@
 import Promise = require('bluebird');
-const _ = require('underscore');
 import { AbstractEdulibWSOAuth, IOptions } from './abstract.edulib.ws.oauth';
+import request = require('request');
 
 export interface IClassroom {
   establishment_account_id: string;
@@ -186,9 +186,22 @@ export class EdulibWSV4 extends AbstractEdulibWSOAuth {
   }
 
   public createTeacher(data: ITeacher): Promise<any> {
-    const formData = this.flattenJSON({ teacher: data });
+    const deferred = Promise.defer();
     const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
-    return this.request({ uri: this.buildUrl('/teachers'), method: 'POST', headers, formData });
+    const options = { uri: this.buildUrl('/teachers'), method: 'POST', headers }
+    this.updateOptions(options);
+    const req = request(options, (err, res, body) => {
+      this.processResponse(err, res, body).then((data) => deferred.resolve(data), (err) => deferred.reject(err));
+    });
+    const formData = req.form();
+    formData.append('teacher[establishment_account_id]', data.establishment_account_id);
+    formData.append('teacher[last_name]', data.last_name);
+    formData.append('teacher[first_name]', data.first_name);
+    formData.append('teacher[email]', data.email);
+    formData.append('teacher[password]', data.password);
+    (data.classroom_ids || []).forEach(d => formData.append('teacher[classroom_ids][]', d));
+    (data.subject_ids || []).forEach(d => formData.append('teacher[subject_ids][]', d));
+    return deferred.promise;
   }
 
   public updateTeacher(id: string, data: any): Promise<any> {
@@ -204,40 +217,6 @@ export class EdulibWSV4 extends AbstractEdulibWSOAuth {
   public unassignTeacherLicense(id: string, licenseId: string): Promise<any> {
     const form = { license_id: licenseId };
     return this.request({ uri: this.buildUrl(`/teachers/${id}/unassign`), method: 'POST', form });
-  }
-
-  public flattenJSON(obj: any, lvl = 0): any {
-    let nobj: { [key: string]: string } = {};
-    _.each(obj, (val: any, key: string) => {
-      if (_.isArray(val) && !_.isEmpty(val)) {
-        _.each(val, (v: any) => {
-          if (lvl === 0) {
-            nobj[`${key}[]`] = v
-          } else {
-            nobj[`[${key}][]`] = v
-          }
-          if (_.isObject(v)) {
-            nobj = this.flattenJSON(nobj, lvl + 1)
-          };
-        })
-      } else if (_.isObject(val) && !_.isEmpty(val)) {
-        const strip = this.flattenJSON(val, lvl + 1)
-        _.each(strip, function (v: any, k: string) {
-          if (lvl === 0) {
-            nobj[`${key}${k}`] = v
-          } else {
-            nobj[`[${key}]${k}`] = v
-          }
-        })
-      } else {
-        if (lvl === 0) {
-          nobj[key] = val
-        } else {
-          nobj[`[${key}]`] = val
-        }
-      }
-    });
-    return nobj;
   }
 
 };

@@ -75,16 +75,16 @@ const v4 = new V4({
 // }, err => console.error('error:', err))
 // .catch(err => console.error('catched error:', err));
 
-console.log(
-  v4.flattenJSON({
-    teacher: {
-      establishment_account_id: etablishmentId,
-      last_name: 'test',
-      first_name: 'test',
-      email: 'test-ws-student@student.edulib.fr',
-      password: 'password',
-      classroom_ids: [classroom],
-      subject_ids: [subject]
-    }
-  })
-);
+// console.log(
+//   v4.flattenJSON({
+//     teacher: {
+//       establishment_account_id: etablishmentId,
+//       last_name: 'test',
+//       first_name: 'test',
+//       email: 'test-ws-student@student.edulib.fr',
+//       password: 'password',
+//       classroom_ids: [classroom],
+//       subject_ids: [subject]
+//     }
+//   })
+// );

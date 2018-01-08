@@ -17,29 +17,36 @@ var AbstractEdulibWS = (function () {
         }
     }
     AbstractEdulibWS.prototype.request = function (options) {
+        var _this = this;
         var deferred = Promise.defer();
+        this.updateOptions(options);
+        this.logger.debug('EdulibWS::request', 'options:', options);
+        request(options, function (err, res, body) {
+            _this.processResponse(err, res, body).then(function (data) { return deferred.resolve(data); }, function (err) { return deferred.reject(err); });
+        });
+        return deferred.promise;
+    };
+    AbstractEdulibWS.prototype.updateOptions = function (options) {
         var authToken = this.getAuthToken();
         if (authToken) {
             options.headers = merge({
                 Authorization: "Bearer " + authToken
             }, options.headers || {});
         }
-        this.logger.debug('EdulibWS::request', 'options:', options);
-        request(options, function (err, res, body) {
-            if (err) {
-                return deferred.reject(err);
+    };
+    AbstractEdulibWS.prototype.processResponse = function (err, res, body) {
+        if (err) {
+            return Promise.reject(err);
+        }
+        if (res.statusCode === 200 || res.statusCode === 201) {
+            try {
+                return Promise.resolve(JSON.parse(body));
             }
-            if (res.statusCode === 200 || res.statusCode === 201) {
-                try {
-                    return deferred.resolve(JSON.parse(body));
-                }
-                catch (err) {
-                    deferred.reject(err);
-                }
+            catch (err) {
+                Promise.reject(err);
             }
-            deferred.reject({ statusCode: res.statusCode, message: body });
-        });
-        return deferred.promise;
+        }
+        return Promise.reject({ statusCode: res.statusCode, message: body });
     };
     AbstractEdulibWS.prototype.buildUrl = function (path) {
         return this.host + "/api/" + this.version + path;

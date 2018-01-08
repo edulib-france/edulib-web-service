@@ -10,8 +10,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var _ = require('underscore');
+var Promise = require("bluebird");
 var abstract_edulib_ws_oauth_1 = require("./abstract.edulib.ws.oauth");
+var request = require("request");
 var EdulibWSV4 = (function (_super) {
     __extends(EdulibWSV4, _super);
     function EdulibWSV4(options) {
@@ -90,9 +91,23 @@ var EdulibWSV4 = (function (_super) {
         return this.request({ uri: this.buildUrl("/students/" + id + "/unassign"), method: 'POST', form: form });
     };
     EdulibWSV4.prototype.createTeacher = function (data) {
-        var formData = this.flattenJSON({ teacher: data });
+        var _this = this;
+        var deferred = Promise.defer();
         var headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
-        return this.request({ uri: this.buildUrl('/teachers'), method: 'POST', headers: headers, formData: formData });
+        var options = { uri: this.buildUrl('/teachers'), method: 'POST', headers: headers };
+        this.updateOptions(options);
+        var req = request(options, function (err, res, body) {
+            _this.processResponse(err, res, body).then(function (data) { return deferred.resolve(data); }, function (err) { return deferred.reject(err); });
+        });
+        var formData = req.form();
+        formData.append('teacher[establishment_account_id]', data.establishment_account_id);
+        formData.append('teacher[last_name]', data.last_name);
+        formData.append('teacher[first_name]', data.first_name);
+        formData.append('teacher[email]', data.email);
+        formData.append('teacher[password]', data.password);
+        (data.classroom_ids || []).forEach(function (d) { return formData.append('teacher[classroom_ids][]', d); });
+        (data.subject_ids || []).forEach(function (d) { return formData.append('teacher[subject_ids][]', d); });
+        return deferred.promise;
     };
     EdulibWSV4.prototype.updateTeacher = function (id, data) {
         var form = { teacher: data };
@@ -105,47 +120,6 @@ var EdulibWSV4 = (function (_super) {
     EdulibWSV4.prototype.unassignTeacherLicense = function (id, licenseId) {
         var form = { license_id: licenseId };
         return this.request({ uri: this.buildUrl("/teachers/" + id + "/unassign"), method: 'POST', form: form });
-    };
-    EdulibWSV4.prototype.flattenJSON = function (obj, lvl) {
-        var _this = this;
-        if (lvl === void 0) { lvl = 0; }
-        var nobj = {};
-        _.each(obj, function (val, key) {
-            if (_.isArray(val) && !_.isEmpty(val)) {
-                _.each(val, function (v) {
-                    if (lvl === 0) {
-                        nobj[key + "[]"] = v;
-                    }
-                    else {
-                        nobj["[" + key + "][]"] = v;
-                    }
-                    if (_.isObject(v)) {
-                        nobj = _this.flattenJSON(nobj, lvl + 1);
-                    }
-                    ;
-                });
-            }
-            else if (_.isObject(val) && !_.isEmpty(val)) {
-                var strip = _this.flattenJSON(val, lvl + 1);
-                _.each(strip, function (v, k) {
-                    if (lvl === 0) {
-                        nobj["" + key + k] = v;
-                    }
-                    else {
-                        nobj["[" + key + "]" + k] = v;
-                    }
-                });
-            }
-            else {
-                if (lvl === 0) {
-                    nobj[key] = val;
-                }
-                else {
-                    nobj["[" + key + "]"] = val;
-                }
-            }
-        });
-        return nobj;
     };
     return EdulibWSV4;
 }(abstract_edulib_ws_oauth_1.AbstractEdulibWSOAuth));
