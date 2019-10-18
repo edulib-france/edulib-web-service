@@ -20,7 +20,7 @@ export interface IOptions {
 export abstract class AbstractEdulibWS {
 
   static Environment: IEnvironment = {
-    staging: 'https://staging-edulib.xair.cloud',
+    staging: 'https://staging.edulib.fr',
     production: 'https://www.edulib.fr'
   }
 
