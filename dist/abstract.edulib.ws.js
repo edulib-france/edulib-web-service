@@ -52,7 +52,7 @@ var AbstractEdulibWS = (function () {
         return this.host + "/api/" + this.version + path;
     };
     AbstractEdulibWS.Environment = {
-        staging: 'https://staging-edulib.xair.cloud',
+        staging: 'https://staging.edulib.fr',
         production: 'https://www.edulib.fr'
     };
     return AbstractEdulibWS;
