@@ -11,11 +11,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://eric-herve-edulib@bitbucket.org/edulib/edulib-web-service.git"
+    "url": "git+ssh://git@github.com/edulib-france/edulib-web-service.git"
   },
-  "author": "Éric Hervé <eric.herve@edulib.fr>",
+  "author": "Edulib",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/edulib/edulib-web-service#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
     "merge": "^1.2.0",
